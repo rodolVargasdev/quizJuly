@@ -50,20 +50,20 @@ const questions = [
       options: ["4x^2 - 2xy - x + 6x - 3", "4x^2 - 2xy + 6x - x - 3", "4x^2 - 2xy + 2x - x + 3"],
       answer: "4x^2 - 2xy + 6x - x - 3"
     }
-  ];
-  
-  // Variable para almacenar las respuestas seleccionadas por el jugador
-  const chosenAnswers = [];
-  
-  // Variables globales
-  let currentQuestion = 0;
-  let score = 0;
-  
-  // Función para cargar la pregunta actual
-  function loadQuestion() {
+];
+
+// Variable para almacenar las respuestas seleccionadas por el jugador
+const chosenAnswers = [];
+
+// Variables globales
+let currentQuestion = 0;
+let score = 0;
+
+// Función para cargar la pregunta actual
+function loadQuestion() {
     const questionElement = document.getElementById("question");
     const optionsElement = document.getElementById("options");
-    const currentQuestionData = randomQuestions[currentQuestion];
+    const currentQuestionData = questions[currentQuestion];
   
     questionElement.textContent = currentQuestionData.question;
     optionsElement.innerHTML = "";
@@ -75,11 +75,11 @@ const questions = [
       button.addEventListener("click", () => checkAnswer(option));
       optionsElement.appendChild(button);
     });
-  }
-  
-  // Función para verificar la respuesta seleccionada
-  function checkAnswer(selectedOption) {
-    const currentQuestionData = randomQuestions[currentQuestion];
+}
+
+// Función para verificar la respuesta seleccionada
+function checkAnswer(selectedOption) {
+    const currentQuestionData = questions[currentQuestion];
   
     // Almacenar la respuesta seleccionada
     chosenAnswers[currentQuestion] = selectedOption;
@@ -90,15 +90,30 @@ const questions = [
   
     currentQuestion++;
   
-    if (currentQuestion < randomQuestions.length) {
+    if (currentQuestion < 3) {
       loadQuestion();
     } else {
       showResult();
     }
-  }
-  
-  // Función para mostrar el resultado final
-  function showResult() {
+}
+
+// Función para seleccionar preguntas aleatorias
+function selectRandomQuestions() {
+  const shuffledQuestions = questions.sort(() => Math.random() - 0.5);
+  return shuffledQuestions.slice(0, 3);
+}
+
+// Inicializar el quiz al hacer clic en el botón de inicio
+document.getElementById("startBtn").addEventListener("click", () => {
+    document.getElementById("quiz").classList.remove("d-none");
+    const randomQuestions = selectRandomQuestions();
+    questions.length = 0; // Vaciar el array original
+    questions.push(...randomQuestions); // Añadir las preguntas aleatorias al array original
+    loadQuestion();
+});
+
+// Función para mostrar el resultado final
+function showResult() {
     const quizElement = document.getElementById("quiz");
     const resultElement = document.getElementById("result");
     const scoreElement = document.getElementById("score");
@@ -107,10 +122,10 @@ const questions = [
     quizElement.classList.add("d-none");
     resultElement.classList.remove("d-none");
   
-    scoreElement.textContent = `Puntuación: ${score}/${randomQuestions.length}`;
+    scoreElement.textContent = `Puntuación: ${score}/3`;
   
     correctAnswersElement.innerHTML = "";
-    randomQuestions.forEach((question, index) => {
+    questions.forEach((question, index) => {
       const div = document.createElement("div");
       div.classList.add("question-result");
   
@@ -128,42 +143,23 @@ const questions = [
   
       correctAnswersElement.appendChild(div);
     });
-  }
-  
-  // Función para seleccionar preguntas aleatorias
-  function selectRandomQuestions() {
-    const shuffledQuestions = questions.sort(() => Math.random() - 0.5); // Mezcla las preguntas aleatoriamente
-    return shuffledQuestions.slice(0, 3); // Selecciona las primeras tres preguntas
-  }
-  
-  // Variable global para almacenar las preguntas seleccionadas aleatoriamente
-  const randomQuestions = selectRandomQuestions();
-  
-  // Inicializar el quiz al hacer clic en el botón de inicio
-  document.getElementById("startBtn").addEventListener("click", () => {
-    document.getElementById("quiz").classList.remove("d-none");
-    loadQuestion();
-  });
-  
-  // Función para reiniciar el quiz
-  function restartQuiz() {
+}
+
+// Función para reiniciar el quiz
+function restartQuiz() {
     // Reiniciar variables globales
-    currentQuestion = 0;
-    score = 0;
-    chosenAnswers.length = 0;
-    
-    // Seleccionar tres preguntas aleatorias nuevamente
-    randomQuestions = selectRandomQuestions();
+    // currentQuestion = 0;
+    // score = 0;
+    // chosenAnswers.length = 0;
   
-    // Ocultar resultados y mostrar quiz
-    document.getElementById("result").classList.add("d-none");
-    document.getElementById("quiz").classList.remove("d-none");
-    loadQuestion();
+    // // Ocultar resultados y mostrar quiz
+    // document.getElementById("result").classList.add("d-none");
+    // document.getElementById("quiz").classList.remove("d-none");
   
-    // Cargar la primera pregunta
-    loadQuestion();
-  }
-  
-  // Event listener para el botón de reinicio
-  document.getElementById("restartBtn").addEventListener("click", restartQuiz);
-  
+    // // Cargar la primera pregunta
+    // loadQuestion();
+    location. reload();
+}
+
+// Event listener para el botón de reinicio
+document.getElementById("restartBtn").addEventListener("click", restartQuiz);
