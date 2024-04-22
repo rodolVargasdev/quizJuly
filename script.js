@@ -1,122 +1,137 @@
+// Array de preguntas y respuestas
 const questions = [
     {
       question: "Calcula el producto de los siguientes polinomios: (x+y+1)(x+y+3)",
-      answers: [
-        { text: "x^2 + 2xy + 4x + y^2 + 4y + 3", correct: true },
-        { text: "x^2 + 3x - y^2 + 3", correct: false },
-        { text: "6x^2 + 11xy - 3x - 10y^2 + 21y - 9", correct: false },
-        { text: "10x^5 + 6x^7", correct: false }
-      ]
+      options: ["x² + 4xy + 3x + 3y + 3", "x² + 2xy + 3x + 3y + 3", "x² + 4xy + 4x + 4y + 4"],
+      answer: "x² + 4xy + 3x + 3y + 3"
     },
     {
       question: "Calcula el producto de los siguientes polinomios: (x+y+1)(x-y+3)",
-      answers: [
-        { text: "x^2 + 2xy + 4x + y^2 + 4y + 3", correct: false },
-        { text: "x^2 + 3x - y^2 + 3", correct: true },
-        { text: "6x^2 + 11xy - 3x - 10y^2 + 21y - 9", correct: false },
-        { text: "10x^5 + 6x^7", correct: false }
-      ]
+      options: ["x² + 2xy - 3x + 3y + 3", "x² - 4xy + 3x + 3y + 3", "x² - 2xy + 3x + 3y + 3"],
+      answer: "x² + 2xy - 3x + 3y + 3"
     },
     {
       question: "Calcula el producto de los siguientes polinomios: (3x-2y+3)(2x+5y-3)",
-      answers: [
-        { text: "x^2 + 2xy + 4x + y^2 + 4y + 3", correct: false },
-        { text: "x^2 + 3x - y^2 + 3", correct: false },
-        { text: "6x^2 + 11xy - 3x - 10y^2 + 21y - 9", correct: true },
-        { text: "10x^5 + 6x^7", correct: false }
-      ]
+      options: ["6x² + x - 6y + 3", "6x² + x + 19y - 6", "6x² - x + 19y - 6"],
+      answer: "6x² + x + 19y - 6"
     },
     {
-      question: "Calcula el producto de los siguientes polinomios: (2x^2)(5x^3+3x^5)",
-      answers: [
-        { text: "x^2 + 2xy + 4x + y^2 + 4y + 3", correct: false },
-        { text: "x^2 + 3x - y^2 + 3", correct: false },
-        { text: "6x^2 + 11xy - 3x - 10y^2 + 21y - 9", correct: false },
-        { text: "10x^5 + 6x^7", correct: true }
-      ]
+      question: "Calcula lo siguiente: (2x^2)(5x^3+3x^5)",
+      options: ["10x^5 + 6x^7", "10x^5 + 6x^10", "10x^6 + 6x^7"],
+      answer: "10x^5 + 6x^7"
     },
     {
-      question: "Calcula el producto de los siguientes polinomios: -3y(x-y)",
-      answers: [
-        { text: "-3xy + 3y^2", correct: true },
-        { text: "-x^2 + 2xy - y^2", correct: false },
-        { text: "-6x^2 - 11xy + 3x + 10y^2 - 21y + 9", correct: false },
-        { text: "-10x^5 - 6x^7", correct: false }
-      ]
+      question: "Calcula lo siguiente: -3y(x-y)",
+      options: ["-3xy + 3y^2", "3xy - 3y^2", "-3xy - 3y^2"],
+      answer: "-3xy + 3y^2"
+    },
+    {
+      question: "Calcula lo siguiente: 2x(x+y)",
+      options: ["2x^2 + 2xy", "2x^2 + 2y", "2x^2 + 2xy + 2y"],
+      answer: "2x^2 + 2xy"
+    },
+    {
+      question: "Calcula lo siguiente: (3x-5)(2y-4)",
+      options: ["6xy - 26x - 20y + 20", "6xy - 26x + 20y - 20", "6xy - 2x - 20y + 20"],
+      answer: "6xy - 26x + 20y - 20"
+    },
+    {
+      question: "Calcula lo siguiente: (-x-2)(2y-3)",
+      options: ["-2xy - 3x + 6y + 6", "-2xy + 3x - 6y - 6", "-2xy - 3x - 6y - 6"],
+      answer: "-2xy - 3x + 6y + 6"
+    },
+    {
+      question: "Calcula lo siguiente: (x+3)(3xy+2x+4y)",
+      options: ["3x^2y + 6xy + 9x + 12y + 4", "3x^2y + 9xy + 6x + 12y + 4", "3x^2y + 9xy + 9x + 12y + 4"],
+      answer: "3x^2y + 9xy + 6x + 12y + 4"
+    },
+    {
+      question: "Calcula lo siguiente: (2x-1)(2x-y+3)",
+      options: ["4x^2 - 2xy - x + 6x - 3", "4x^2 - 2xy + 6x - x - 3", "4x^2 - 2xy + 2x - x + 3"],
+      answer: "4x^2 - 2xy + 6x - x - 3"
     }
   ];
   
-  const quizContainer = document.getElementById('quiz');
-  const resultsContainer = document.getElementById('results');
-  const startButton = document.getElementById('start-btn');
+  // Variable para almacenar las respuestas seleccionadas por el jugador
+  const chosenAnswers = [];
   
-  startButton.addEventListener('click', startQuiz);
+  // Variables globales
+  let currentQuestion = 0;
+  let score = 0;
   
-  function startQuiz() {
-    startButton.classList.add('d-none');
-    displayNextQuestion();
-  }
+  // Función para cargar la pregunta actual
+  function loadQuestion() {
+    const questionElement = document.getElementById("question");
+    const optionsElement = document.getElementById("options");
+    const currentQuestionData = questions[currentQuestion];
   
-  let currentQuestionIndex = 0;
+    questionElement.textContent = currentQuestionData.question;
+    optionsElement.innerHTML = "";
   
-  function displayNextQuestion() {
-    resetQuiz();
-    showQuestion(questions[currentQuestionIndex]);
-  }
-  
-  function showQuestion(question) {
-    const questionElement = document.createElement('div');
-    questionElement.classList.add('question');
-    questionElement.innerHTML = `
-      <h2>${question.question}</h2>
-      <div class="btn-group-vertical" role="group">
-        ${question.answers.map(answer => `<button type="button" class="btn btn-primary btn-answer">${answer.text}</button>`).join('')}
-      </div>
-    `;
-    quizContainer.appendChild(questionElement);
-  
-    const answerButtons = questionElement.querySelectorAll('.btn-answer');
-    answerButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        checkAnswer(button.textContent, question);
-      });
+    currentQuestionData.options.forEach((option, index) => {
+      const button = document.createElement("button");
+      button.textContent = option;
+      button.classList.add("btn", "btn-secondary", "mr-2");
+      button.addEventListener("click", () => checkAnswer(option));
+      optionsElement.appendChild(button);
     });
   }
   
-  function checkAnswer(selectedAnswer, question) {
-    const correctAnswer = question.answers.find(answer => answer.correct).text;
-    if (selectedAnswer === correctAnswer) {
-      results.correct++;
+  // Función para verificar la respuesta seleccionada
+  function checkAnswer(selectedOption) {
+    const currentQuestionData = questions[currentQuestion];
+  
+    // Almacenar la respuesta seleccionada
+    chosenAnswers[currentQuestion] = selectedOption;
+  
+    if (selectedOption === currentQuestionData.answer) {
+      score++;
+    }
+  
+    currentQuestion++;
+  
+    if (currentQuestion < questions.length) {
+      loadQuestion();
     } else {
-      results.wrong++;
-    }
-    currentQuestionIndex++;
-    if (currentQuestionIndex < questions.length) {
-      displayNextQuestion();
-    } else {
-      showResults();
+      showResult();
     }
   }
   
-  function showResults() {
-    resultsContainer.classList.remove('d-none');
-    resultsContainer.innerHTML = `
-      <h2>Resultados:</h2>
-      <p>Respuestas correctas: ${results.correct}</p>
-      <p>Respuestas incorrectas: ${results.wrong}</p>
-      <button class="btn btn-primary" onclick="location.reload()">Volver a Intentar</button>
-    `;
+  // Función para mostrar el resultado final
+  function showResult() {
+    const quizElement = document.getElementById("quiz");
+    const resultElement = document.getElementById("result");
+    const scoreElement = document.getElementById("score");
+    const correctAnswersElement = document.getElementById("correctAnswers");
+  
+    quizElement.classList.add("d-none");
+    resultElement.classList.remove("d-none");
+  
+    scoreElement.textContent = `Puntuación: ${score}/${questions.length}`;
+  
+    correctAnswersElement.innerHTML = "";
+    questions.forEach((question, index) => {
+      const div = document.createElement("div");
+      div.classList.add("question-result");
+  
+      const questionInfo = document.createElement("p");
+      questionInfo.textContent = `Pregunta ${index + 1}: ${question.question}`;
+      div.appendChild(questionInfo);
+  
+      const correctAnswerInfo = document.createElement("p");
+      correctAnswerInfo.textContent = `Respuesta correcta: ${question.answer}`;
+      div.appendChild(correctAnswerInfo);
+  
+      const chosenAnswerInfo = document.createElement("p");
+      chosenAnswerInfo.textContent = `Tu respuesta: ${chosenAnswers[index] || 'No respondida'}`;
+      div.appendChild(chosenAnswerInfo);
+  
+      correctAnswersElement.appendChild(div);
+    });
   }
   
-  function resetQuiz() {
-    while (quizContainer.firstChild) {
-      quizContainer.removeChild(quizContainer.firstChild);
-    }
-  }
-  
-  // Inicializar resultados
-  const results = {
-    correct: 0,
-    wrong: 0
-  };
-  
+  // Inicializar el quiz al hacer clic en el botón de inicio
+  document.getElementById("startBtn").addEventListener("click", () => {
+    document.getElementById("quiz").classList.remove("d-none");
+    loadQuestion();
+  });
