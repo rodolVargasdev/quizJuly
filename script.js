@@ -63,7 +63,7 @@ const questions = [
   function loadQuestion() {
     const questionElement = document.getElementById("question");
     const optionsElement = document.getElementById("options");
-    const currentQuestionData = questions[currentQuestion];
+    const currentQuestionData = randomQuestions[currentQuestion];
   
     questionElement.textContent = currentQuestionData.question;
     optionsElement.innerHTML = "";
@@ -79,7 +79,7 @@ const questions = [
   
   // Función para verificar la respuesta seleccionada
   function checkAnswer(selectedOption) {
-    const currentQuestionData = questions[currentQuestion];
+    const currentQuestionData = randomQuestions[currentQuestion];
   
     // Almacenar la respuesta seleccionada
     chosenAnswers[currentQuestion] = selectedOption;
@@ -90,7 +90,7 @@ const questions = [
   
     currentQuestion++;
   
-    if (currentQuestion < questions.length) {
+    if (currentQuestion < randomQuestions.length) {
       loadQuestion();
     } else {
       showResult();
@@ -107,10 +107,10 @@ const questions = [
     quizElement.classList.add("d-none");
     resultElement.classList.remove("d-none");
   
-    scoreElement.textContent = `Puntuación: ${score}/${questions.length}`;
+    scoreElement.textContent = `Puntuación: ${score}/${randomQuestions.length}`;
   
     correctAnswersElement.innerHTML = "";
-    questions.forEach((question, index) => {
+    randomQuestions.forEach((question, index) => {
       const div = document.createElement("div");
       div.classList.add("question-result");
   
@@ -130,8 +130,40 @@ const questions = [
     });
   }
   
+  // Función para seleccionar preguntas aleatorias
+  function selectRandomQuestions() {
+    const shuffledQuestions = questions.sort(() => Math.random() - 0.5); // Mezcla las preguntas aleatoriamente
+    return shuffledQuestions.slice(0, 3); // Selecciona las primeras tres preguntas
+  }
+  
+  // Variable global para almacenar las preguntas seleccionadas aleatoriamente
+  const randomQuestions = selectRandomQuestions();
+  
   // Inicializar el quiz al hacer clic en el botón de inicio
   document.getElementById("startBtn").addEventListener("click", () => {
     document.getElementById("quiz").classList.remove("d-none");
     loadQuestion();
   });
+  
+  // Función para reiniciar el quiz
+  function restartQuiz() {
+    // Reiniciar variables globales
+    currentQuestion = 0;
+    score = 0;
+    chosenAnswers.length = 0;
+    
+    // Seleccionar tres preguntas aleatorias nuevamente
+    randomQuestions = selectRandomQuestions();
+  
+    // Ocultar resultados y mostrar quiz
+    document.getElementById("result").classList.add("d-none");
+    document.getElementById("quiz").classList.remove("d-none");
+    loadQuestion();
+  
+    // Cargar la primera pregunta
+    loadQuestion();
+  }
+  
+  // Event listener para el botón de reinicio
+  document.getElementById("restartBtn").addEventListener("click", restartQuiz);
+  
